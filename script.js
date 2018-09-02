@@ -87,7 +87,6 @@ const numbers = {
   ],
 };
 
-
 class Clock {
   constructor(radius, centerX, centerY) {
     this.strokeWidth = 1;
@@ -118,7 +117,6 @@ class Clock {
     return {hours: this.hours, minutes: this.minutes};
   }
 
-
   drawArm(progress) {
     const armRadians = ((2 * Math.PI) * progress) - ((2 * Math.PI) / 4);
     const armLength = this.radius - 3;
@@ -134,7 +132,6 @@ class Clock {
     ctx.stroke();
   }
 }
-
 
 class ClockPanel {
   constructor(width, height, posX, posY) {
@@ -214,9 +211,7 @@ const draw = () => {
   window.requestAnimationFrame(draw);
 }
 
-const init = () => {
-  window.requestAnimationFrame(draw);
-}
+const init = () => window.requestAnimationFrame(draw);
 
 init();
 
