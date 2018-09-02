@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Clock clock</title>
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      display: table;
+      width: 100%;
+      height: 100%;
+      vertical-align: middle;
+      margin: 0;
+      font-size: 0.8rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      line-height: 1.5;
+      color: #333;
+    }
+    .center-align {
+      height: 100%;
+      width: 100%;
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+    }
+    main {
+      display: inline-block;
+    }
+    p {
+      margin: 5px;
+    }
+
+    a {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="center-align">
+    <main>
+      <canvas id="canvas"></canvas>
+      <p>Made by <a href="https://alfons.cc" target="_blank" title="alfons.cc">Alfons Bengtegård.</a></p>
+      <p>Inspired by <a href="https://www.humanssince1982.com/a-million-times-at-changi" title="Humans since 1982" target="_blank">this thing</a> by Humans since 1982.</p>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
