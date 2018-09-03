@@ -91,7 +91,7 @@ class Clock {
   constructor(radius, centerX, centerY) {
     this.strokeWidth = 1;
     this.strokeColor = '#999999';
-    this.radius = radius - this.strokeWidth; // Maybe change this.
+    this.radius = radius - this.strokeWidth;
     this.centerX = centerX;
     this.centerY = centerY;
     this.hours = Math.floor((Math.random() * 12) + 1);
@@ -168,20 +168,19 @@ class ClockPanel {
   displayNumber(numberArray) {
     numberArray.forEach((row, rowIndex) => {
       row.forEach((col, colIndex) => {
-        let currentClock = this.clocks[rowIndex][colIndex];
-        if(currentClock.time.minutes !== col.minutes && currentClock.time.hours !== col.hours) {
-          const h = currentClock.time.hours === 12 ? 0 : currentClock.time.hours + 0.1;
-          const m = currentClock.time.minutes === 60 ? 0 : currentClock.time.minutes + 1;
-          currentClock.setTime(h, m);
-        } else if(currentClock.time.minutes !== col.minutes) {
-          const m = currentClock.time.minutes === 60 ? 0 : currentClock.time.minutes + 1;
-          currentClock.setTime(currentClock.time.hours, m);
-        } else if(currentClock.time.hours !== col.hours) {
-          const h = currentClock.time.hours === 12 ? 0 : currentClock.time.hours + 0.1;
-          currentClock.setTime(h, currentClock.time.minutes);
-        } else {
-          currentClock.setTime(currentClock.time.hours, currentClock.time.minutes);
+        const clock = this.clocks[rowIndex][colIndex];
+        let h = clock.time.hours;
+        let m = clock.time.minutes;
+
+        if (clock.time.minutes !== col.minutes) {
+          m = clock.time.minutes === 60 ? 0 : clock.time.minutes + 1;
         }
+
+        if (clock.time.hours !== col.hours) {
+          h = clock.time.hours === 12 ? 0 : clock.time.hours + 0.1;
+        }
+
+        clock.setTime(h, m);
       });
     });
   }
@@ -197,7 +196,7 @@ const draw = () => {
   const hours = (`0${today.getHours()}`).slice(-2);
   const minutes = (`0${today.getMinutes()}`).slice(-2);
 
-  ctx.clearRect(0, 0, 400, 600);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   hourPanel1.draw();
   hourPanel2.draw();
   minutePanel1.draw();
@@ -214,6 +213,3 @@ const draw = () => {
 const init = () => window.requestAnimationFrame(draw);
 
 init();
-
-
-
