@@ -90,7 +90,7 @@ const numbers = {
 class Clock {
   constructor(radius, centerX, centerY) {
     this.strokeWidth = 1;
-    this.strokeColor = '#666666';
+    this.strokeColor = '#999999';
     this.radius = radius - this.strokeWidth; // Maybe change this.
     this.centerX = centerX;
     this.centerY = centerY;
@@ -194,7 +194,7 @@ const minutePanel2 = new ClockPanel(200, 300, 200, 300);
 
 const draw = () => {
   const today = new Date();
-  const hours = today.getHours();
+  const hours = (`0${today.getHours()}`).slice(-2);
   const minutes = (`0${today.getMinutes()}`).slice(-2);
 
   ctx.clearRect(0, 0, 400, 600);
