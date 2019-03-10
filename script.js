@@ -1,8 +1,8 @@
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-ctx.canvas.width = 400;
-ctx.canvas.height = 600;
+ctx.canvas.width = ((window.innerHeight / 3) * 2) - 80;
+ctx.canvas.height = window.innerHeight - 120;
 
 const numbers = {
   0: [
@@ -89,8 +89,10 @@ const numbers = {
 
 class Clock {
   constructor(radius, centerX, centerY) {
-    this.strokeWidth = 1;
-    this.strokeColor = '#999999';
+    this.strokeWidth = 3;
+    this.strokeColor = '#333';
+    this.armColor = 'white';
+    this.armWidth = 3;
     this.radius = radius - this.strokeWidth;
     this.centerX = centerX;
     this.centerY = centerY;
@@ -99,10 +101,13 @@ class Clock {
   }
 
   draw() {
-    ctx.beginPath();
-    ctx.arc(this.centerX, this.centerY, this.radius, 0, 2 * Math.PI, false);
+    ctx.lineJoin = 'round';
+		ctx.lineCap = 'round';
     ctx.lineWidth = this.strokeWidth;
     ctx.strokeStyle = this.strokeColor;
+    
+    ctx.beginPath();
+    ctx.arc(this.centerX, this.centerY, this.radius, 0, 2 * Math.PI, false);
     ctx.stroke();
   }
 
@@ -119,13 +124,13 @@ class Clock {
 
   drawArm(progress) {
     const armRadians = ((2 * Math.PI) * progress) - ((2 * Math.PI) / 4);
-    const armLength = this.radius - 3;
+    const armLength = this.radius - this.strokeWidth * 2;
  
     const targetX = this.centerX + Math.cos(armRadians) * armLength;
     const targetY = this.centerY + Math.sin(armRadians) * armLength;
  
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = this.armWidth;
+    ctx.strokeStyle = this.armColor;
     ctx.beginPath();
     ctx.moveTo(this.centerX, this.centerY);
     ctx.lineTo(targetX, targetY);
@@ -134,13 +139,14 @@ class Clock {
 }
 
 class ClockPanel {
-  constructor(width, height, posX, posY) {
-    this.width = width;
+  constructor(height, posX, posY) {
     this.height = height;
+    this.width = (height / 3) * 2;
     this.posX = posX;
     this.posY = posY;
     this.rows = 6;
     this.columns = 4;
+    this.clockSpacing = 2;
     this.clocks = Array.from({length: this.rows}, i => []);
 
     const colWidth = this.width / this.columns;
@@ -155,7 +161,8 @@ class ClockPanel {
       
       for (let col = 0; col < this.columns; col++) {
         cX = cX + colWidth;
-        const clock = new Clock(25, cX, cY);
+        clockSize = ((this.height / this.rows) / 2) - this.clockSpacing / 2;
+        const clock = new Clock(clockSize, cX, cY);
         this.clocks[row].push(clock);
       }
     }
@@ -186,30 +193,36 @@ class ClockPanel {
   }
 }
 
-const hourPanel1 = new ClockPanel(200, 300, 0, 0);
-const hourPanel2 = new ClockPanel(200, 300, 200, 0);
-const minutePanel1 = new ClockPanel(200, 300, 0, 300);
-const minutePanel2 = new ClockPanel(200, 300, 200, 300);
+const rows = 2;
+const columns = 2;
+const panels = [];
+
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < columns; c++) {
+    const panelPosX = (ctx.canvas.width / columns) * c;
+    const panelPosY = (ctx.canvas.height / rows) * r;
+    panels.push(new ClockPanel(ctx.canvas.height / 2, panelPosX, panelPosY));
+  }
+}
 
 const draw = () => {
   const today = new Date();
   const hours = (`0${today.getHours()}`).slice(-2);
   const minutes = (`0${today.getMinutes()}`).slice(-2);
 
+  ctx.canvas.width = ((window.innerHeight / 3) * 2) - 80;
+  ctx.canvas.height = window.innerHeight - 120;
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  hourPanel1.draw();
-  hourPanel2.draw();
-  minutePanel1.draw();
-  minutePanel2.draw();
+  panels.forEach(p => p.draw());
 
-  hourPanel1.displayNumber(numbers[String(hours).charAt(0)]);
-  hourPanel2.displayNumber(numbers[String(hours).charAt(1)]);
-  minutePanel1.displayNumber(numbers[String(minutes).charAt(0)]);
-  minutePanel2.displayNumber(numbers[String(minutes).charAt(1)]);
+  panels[0].displayNumber(numbers[String(hours).charAt(0)]);
+  panels[1].displayNumber(numbers[String(hours).charAt(1)]);
+  panels[2].displayNumber(numbers[String(minutes).charAt(0)]);
+  panels[3].displayNumber(numbers[String(minutes).charAt(1)]);
 
-  window.requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 }
 
-const init = () => window.requestAnimationFrame(draw);
+const init = () => requestAnimationFrame(draw);
 
 init();
