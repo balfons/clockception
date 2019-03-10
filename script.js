@@ -161,7 +161,7 @@ class ClockPanel {
       
       for (let col = 0; col < this.columns; col++) {
         cX = cX + colWidth;
-        clockSize = ((this.height / this.rows) / 2) - this.clockSpacing / 2;
+        const clockSize = ((this.height / this.rows) / 2) - this.clockSpacing / 2;
         const clock = new Clock(clockSize, cX, cY);
         this.clocks[row].push(clock);
       }
