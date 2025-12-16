@@ -168,7 +168,34 @@ class ClockPanel {
     }
   }
 
-  draw() {
+  updateLayout(height, posX, posY) {
+    this.height = height;
+    this.width = (height / 3) * 2;
+    this.posX = posX;
+    this.posY = posY;
+
+    const colWidth = this.width / this.columns;
+    const rowHeight = this.height / this.rows;
+
+    let cX = this.posX - (colWidth / 2);
+    let cY = this.posY - (rowHeight / 2);
+
+    for (let row = 0; row < this.rows; row++) {
+      cX = this.posX - (colWidth / 2);
+      cY = cY + rowHeight;
+      
+      for (let col = 0; col < this.columns; col++) {
+        cX = cX + colWidth;
+        const clockSize = ((this.height / this.rows) / 2) - this.clockSpacing / 2;
+        const clock = this.clocks[row][col];
+        clock.radius = clockSize - clock.strokeWidth;
+        clock.centerX = cX;
+        clock.centerY = cY;
+      }
+    }
+  }
+
+  draw() {
     this.clocks.forEach(row => row.forEach(clock => clock.draw()));
   }
 
@@ -195,23 +222,26 @@ class ClockPanel {
 
 const rows = 2;
 const columns = 2;
-const panels = [];
+let panels = [];
 
-for (let r = 0; r < rows; r++) {
-  for (let c = 0; c < columns; c++) {
-    const panelPosX = (ctx.canvas.width / columns) * c;
-    const panelPosY = (ctx.canvas.height / rows) * r;
-    panels.push(new ClockPanel(ctx.canvas.height / 2, panelPosX, panelPosY));
+const createPanels = () => {
+  panels = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const panelPosX = (ctx.canvas.width / columns) * c;
+      const panelPosY = (ctx.canvas.height / rows) * r;
+      panels.push(new ClockPanel(ctx.canvas.height / 2, panelPosX, panelPosY));
+    }
   }
-}
+};
+
+createPanels();
 
 const draw = () => {
   const today = new Date();
   const hours = (`0${today.getHours()}`).slice(-2);
   const minutes = (`0${today.getMinutes()}`).slice(-2);
 
-  ctx.canvas.width = ((window.innerHeight / 3) * 2) - 80;
-  ctx.canvas.height = window.innerHeight - 120;
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   panels.forEach(p => p.draw());
 
@@ -222,6 +252,23 @@ const draw = () => {
 
   requestAnimationFrame(draw);
 }
+
+const resizeCanvas = () => {
+  ctx.canvas.width = ((window.innerHeight / 3) * 2) - 80;
+  ctx.canvas.height = window.innerHeight - 120;
+  
+  let panelIndex = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const panelPosX = (ctx.canvas.width / columns) * c;
+      const panelPosY = (ctx.canvas.height / rows) * r;
+      panels[panelIndex].updateLayout(ctx.canvas.height / 2, panelPosX, panelPosY);
+      panelIndex++;
+    }
+  }
+};
+
+window.addEventListener('resize', resizeCanvas);
 
 const init = () => requestAnimationFrame(draw);
 
